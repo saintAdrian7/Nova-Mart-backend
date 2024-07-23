@@ -1,0 +1,14 @@
+.navbar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 5px #847e7eb8;
+    width: 100%;
+    height: fit-content;
+    padding: 20px;
+}
+
+.show-form:hover{
+    cursor: pointer;
+}

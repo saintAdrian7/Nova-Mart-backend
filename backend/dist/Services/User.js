@@ -84,7 +84,7 @@ function logInUser(Details) {
     return __awaiter(this, void 0, void 0, function* () {
         const { email, password } = Details;
         try {
-            const user = yield UserModel_1.default.findOne({ email });
+            const user = yield UserModel_1.default.findOne({ email }).populate('products').populate('cart').populate('orders');
             if (!user) {
                 throw new User_1.invalidEmailorPasswordError("Invalid Email");
             }

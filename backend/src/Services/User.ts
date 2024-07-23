@@ -62,7 +62,7 @@ export async function createUser(user: User): Promise<IUser> {
 export async function logInUser(Details:{email:string, password:string}):Promise <IUser>{
     const {email, password} = Details
     try{
-        const user = await UserModel.findOne({email})
+        const user = await UserModel.findOne({email}).populate('products').populate('cart').populate('orders')
         if(!user){
             throw new invalidEmailorPasswordError("Invalid Email")
         }else{
