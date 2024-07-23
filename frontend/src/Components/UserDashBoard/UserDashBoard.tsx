@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Box, Avatar, Grid, Card, CardContent, Divider } from '@mui/material';
+import { Container, Typography, Box, Avatar, Grid, Card, CardContent, CardMedia, Divider } from '@mui/material';
 import axios from 'axios';
 import { styled } from '@mui/system';
 import { motion } from 'framer-motion';
+import Slider from 'react-slick';
 import { useAuth } from '../../context/AuthContext/AuthContextConsts';
 import { User } from '../../Models/Models';
-
-
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const StyledContainer = styled(Container)({
   padding: '2rem',
@@ -22,17 +23,24 @@ const StyledCard = styled(Card)({
   },
 });
 
-const StyledAvatar = styled(Avatar)({
-  width: 100,
-  height: 100,
-  marginBottom: '1rem',
-  boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+
+
+const ImageCarousel = styled(Slider)({
+  '& .slick-slide': {
+    padding: '0 10px',
+  },
+  '& .slick-list': {
+    margin: '0 -10px',
+  },
+  '& .slick-dots': {
+    bottom: '10px',
+  },
 });
 
 const UserDashboard: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const { state } = useAuth();
-  
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -48,13 +56,28 @@ const UserDashboard: React.FC = () => {
 
   if (!user) return <Typography>Loading...</Typography>;
 
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
+  const truncateDescription = (description: string, maxLength: number = 200) => {
+    return description.length > maxLength ? `${description.substring(0, maxLength)}...` : description;
+  };
+
   return (
     <StyledContainer maxWidth="lg">
-      <Box sx={{ textAlign: 'center', mb: 4 }}>
+      <Box sx={{  mb: 4 }}>
         <Typography variant="h4" gutterBottom>
           Welcome, {user.firstName} {user.lastName}
         </Typography>
-        <StyledAvatar src={user.image} alt={user.firstName} />
+        <Avatar sx={{ width: 100,
+          height: 100,
+         marginBottom: '1rem',
+         boxShadow: '0 4px 8px rgba(0,0,0,0.2)'}}  src={user.image} alt={user.firstName} />
         <Typography variant="h6">Email: {user.email}</Typography>
         <Typography variant="h6">Role: {user.role}</Typography>
       </Box>
@@ -67,13 +90,38 @@ const UserDashboard: React.FC = () => {
         </Typography>
         <Grid container spacing={3}>
           {user.products.map((product) => (
-            <Grid item xs={12} sm={6} md={4} key={product.Name}>
+            <Grid item xs={12} sm={6} md={4} key={product._id}>
               <motion.div whileHover={{ scale: 1.05 }}>
                 <StyledCard>
+                  {product.Image.length > 1 ? (
+                    <ImageCarousel {...carouselSettings}>
+                      {product.Image.map((img, index) => (
+                        <div key={index}>
+                          <img src={img} alt={product.Name} style={{ width: '100%', height: 'auto' }} />
+                        </div>
+                      ))}
+                    </ImageCarousel>
+                  ) : (
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={product.Image[0]}
+                      alt={product.Name}
+                    />
+                  )}
                   <CardContent>
                     <Typography variant="h6">{product.Name}</Typography>
-                    <Typography>{product.description}</Typography>
-                    <Typography variant="h6">${product.price}</Typography>
+                    <Typography variant="body2" color="textSecondary" noWrap>
+                      {truncateDescription(product.Description)}
+                    </Typography>
+                    <Box sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
+                      <Typography variant="body1" color="textSecondary" sx={{ textDecoration: 'line-through', mr: 1 }}>
+                        ${product.CashPrice}
+                      </Typography>
+                      <Typography variant="h6" color="primary">
+                        ${product.DiscountedPrice}
+                      </Typography>
+                    </Box>
                   </CardContent>
                 </StyledCard>
               </motion.div>
@@ -96,9 +144,9 @@ const UserDashboard: React.FC = () => {
                 <Typography>Status: {order.status}</Typography>
                 <Typography>Total: ${order.totalAmount}</Typography>
                 <Typography>Products:</Typography>
-                {order.products.map((product) => (
-                  <Typography key={product.product.Name}>
-                    - {product.product.Name} (${product.product.CashPrice})
+                {order.products.map((orderProduct) => (
+                  <Typography key={orderProduct.product._id}>
+                    - {orderProduct.product.Name} (${orderProduct.product.DiscountedPrice})
                   </Typography>
                 ))}
               </CardContent>

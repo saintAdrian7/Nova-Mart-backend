@@ -76,6 +76,7 @@ function getUserById(req, res) {
                 user: {
                     _id: user._id,
                     role: user.role,
+                    email: user.email,
                     firstName: user.firstName,
                     lastName: user.lastName,
                     image: user.image,

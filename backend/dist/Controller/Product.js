@@ -19,8 +19,9 @@ function PostProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const product = req.body;
         try {
-            yield (0, Product_1.createProduct)(product);
-            res.status(200).json({ message: 'Product created successfully' });
+            const createdProduct = yield (0, Product_1.createProduct)(product);
+            const productId = createdProduct._id;
+            res.status(200).json({ message: 'Product created successfully', productId });
         }
         catch (error) {
             res.status(500).json({ message: 'Unable to create product at this time', error: error.message });

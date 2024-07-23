@@ -1,12 +1,13 @@
 import React from 'react';
 import Footer from '../../Components/Footer/Footer';
+import CreateProduct from '../../Features/Products/ProductForm';
 
 
 const HomePage: React.FC = () => {
   return (
     <>
     <div>
-      <h1>Home Page</h1>
+     <CreateProduct />
     </div>
     <Footer />
     </>

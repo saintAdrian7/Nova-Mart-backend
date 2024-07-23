@@ -4,8 +4,9 @@ import { createProduct, deleteProduct, getAllProducts, getOneProduct, updateProd
 export async function PostProduct (req:Request, res:Response){
     const product = req.body
     try{
-         await createProduct(product)
-        res.status(200).json({message:'Product created successfully'})
+        const createdProduct =  await createProduct(product)
+        const productId = createdProduct._id
+        res.status(200).json({message:'Product created successfully', productId})
 
     }catch(error:any){
         res.status(500).json({message:'Unable to create product at this time', error:error.message})

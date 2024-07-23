@@ -61,6 +61,7 @@ export async function getUserById(req:Request, res:Response){
             user:{
                 _id:user._id,
                 role:user.role,
+                email:user.email,
                 firstName:user.firstName,
                 lastName: user.lastName,
                 image:user.image,
