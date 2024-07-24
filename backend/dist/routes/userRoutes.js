@@ -11,5 +11,6 @@ router.post('/login', User_1.handleLogin);
 router.get('/', User_1.getUsers);
 router.get('/:id', User_1.getUserById);
 router.patch('/:id', User_1.UpdateUser);
-router.delete('/:id', User_1.DeleteUser);
+router.delete('/user/:id', User_1.DeleteUser);
+router.delete('/product/:productId/:userId', User_1.DeleteProductFromCart);
 exports.default = router;

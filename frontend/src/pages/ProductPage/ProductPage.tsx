@@ -1,14 +1,15 @@
 import React from 'react';
-import Footer from '../../Components/Footer/Footer';
+import ProductDetails from '../../Features/Products/ProductDetails';
+
 
 const ProductPage: React.FC = () => {
   return (
     <>
   
     <div>
-      <h1>Product Page</h1>
+   <ProductDetails />
     </div>
-    <Footer />
+
     </>
   );
 }

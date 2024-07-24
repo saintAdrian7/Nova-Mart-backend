@@ -14,7 +14,14 @@ export async function createProduct (product:Product):Promise <IProduct>{
 
     }
 }
-
+export const getProductsByCategory = async (category: string): Promise<Product[]> => {
+    try {
+      const products = await ProductModel.find({ Category: category });
+      return products;
+    } catch (error:any) {
+      throw new Error(`Unable to get products by category: ${error.message}`);
+    }
+  };
 
 
 
@@ -76,3 +83,21 @@ export async function deleteProduct (id:string):Promise <IProduct | void>{
     }
 }
 
+
+export const getRecentlyAddedProducts = async (): Promise<Product[]> => {
+    try {
+        const products = await ProductModel.find({}).sort({ createdAt: -1 }).limit(10); 
+        return products;
+    } catch (error:any) {
+        throw new Error(`Unable to get recently added products: ${error.message}`);
+    }
+};
+
+export const getMostPopularProducts = async (): Promise<Product[]> => {
+    try {
+        const products = await ProductModel.find({}).sort({ Rating: -1 }).limit(10); 
+        return products;
+    } catch (error:any) {
+        throw new Error(`Unable to get most popular products: ${error.message}`);
+    }
+};

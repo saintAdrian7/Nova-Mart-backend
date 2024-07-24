@@ -1,30 +1,54 @@
 import { Request, Response } from "express";
-import { createProduct, deleteProduct, getAllProducts, getOneProduct, updateProduct } from "../Services/Product";
+import { createProduct, deleteProduct, getAllProducts, getMostPopularProducts, getOneProduct, getProductsByCategory, getRecentlyAddedProducts, updateProduct } from "../Services/Product";
+import { IProduct } from "../models/ProductModel";
 
 export async function PostProduct (req:Request, res:Response){
     const product = req.body
-    try{
-        const createdProduct =  await createProduct(product)
-        const productId = createdProduct._id
-        res.status(200).json({message:'Product created successfully', productId})
-
-    }catch(error:any){
-        res.status(500).json({message:'Unable to create product at this time', error:error.message})
-
+    try {
+        const createdProduct = await createProduct(product);
+        res.status(200).json({
+          message: 'Product created successfully',
+          createdProduct: {
+            _id: createdProduct._id,
+            Name: createdProduct.Name,
+            price: createdProduct.price,
+            Description: createdProduct.description,
+            image: createdProduct.image,
+            DiscountedPrice: createdProduct.DiscountedPrice,
+            CashPrice: createdProduct.CashPrice,
+            Category: createdProduct.Category,
+            Seller: createdProduct.Seller,
+            Image: createdProduct.image,
+            Rating: createdProduct.Rating,
+            Reviews: createdProduct.Reviews
+          }
+        });
+      } catch (error: any) {
+        res.status(500).json({ message: 'Unable to create product at this time', error: error.message });
+      }
     }
-}
-
-export async function GetAllProducts (req:Request, res:Response){
-    try{
-        const products = await getAllProducts()
-        res.status(200).json({message:"Retrived product successfully", products})
-
-    }catch(error:any){
-        res.status(500).json({message:"Unable to get products at this time", error:error.message})
-
+    
+    export async function GetAllProducts(req: Request, res: Response) {
+      try {
+        const products = await getAllProducts();
+        const formattedProducts = products.map((product: IProduct) => ({
+          _id: product._id,
+          Name: product.Name,
+          price: product.price,
+          Description: product.description,
+          DiscountedPrice: product.DiscountedPrice,
+          CashPrice: product.CashPrice,
+          Category: product.Category,
+          Seller: product.Seller,
+          Image: product.image,
+          Rating: product.Rating,
+          Reviews: product.Reviews
+        }));
+        res.status(200).json({ message: 'Retrieved products successfully', products});
+      } catch (error: any) {
+        res.status(500).json({ message: 'Unable to get products at this time', error: error.message });
+      }
     }
-}
-
 export async function GetProduct (req:Request, res:Response){
     const id = req.params.id
     try{
@@ -80,4 +104,35 @@ export async function DeleteProduct(req:Request, res:Response){
     }catch(error:any){
          res.status(500).json({message:"Unable to delete Product at this time", error: error.message})
     }
+}
+
+
+export async function GetProductsByCategory(req: Request, res: Response) {
+  const category  = req.params.category
+  try {
+    const products = await getProductsByCategory(category);
+    res.status(200).json({ message: "Retrieved products successfully", products });
+  } catch (error: any) {
+    res.status(500).json({ message: "Unable to get products at this time", error: error.message });
+  }
+}
+
+
+export async function GetMostPopularProducts(req: Request, res: Response) {
+  try {
+      const products = await getMostPopularProducts();
+      res.status(200).json({ message: "Retrieved most popular products successfully", products });
+  } catch (error: any) {
+      res.status(500).json({ message: "Unable to get products at this time", error: error.message });
+  }
+}
+
+
+export async function GetRecentlyAddedProducts(req: Request, res: Response) {
+  try {
+      const products = await getRecentlyAddedProducts();
+      res.status(200).json({ message: "Retrieved recently added products successfully", products });
+  } catch (error: any) {
+      res.status(500).json({ message: "Unable to get products at this time", error: error.message });
+  }
 }

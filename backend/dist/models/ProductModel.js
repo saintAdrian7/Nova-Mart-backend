@@ -61,5 +61,7 @@ const ProductSchema = new mongoose_1.Schema({
         type: [mongoose_1.Schema.Types.ObjectId],
         ref: 'NovaMartUser'
     },
+}, {
+    timestamps: true
 });
 exports.default = mongoose_1.default.model('Product', ProductSchema);

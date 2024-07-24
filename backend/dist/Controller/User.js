@@ -15,6 +15,7 @@ exports.getUserById = getUserById;
 exports.UpdateUser = UpdateUser;
 exports.DeleteUser = DeleteUser;
 exports.getUsers = getUsers;
+exports.DeleteProductFromCart = DeleteProductFromCart;
 const User_1 = require("../Services/User");
 const User_2 = require("../Utils/User");
 function handleRegister(req, res) {
@@ -147,6 +148,22 @@ function getUsers(req, res) {
         }
         catch (error) {
             res.status(500).json({ message: "Unable to get users", error: error.message });
+        }
+    });
+}
+function DeleteProductFromCart(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const productId = req.params.productId;
+        const userId = req.params.userId;
+        try {
+            if (!productId || !userId) {
+                return res.status(400).json({ message: "Product id and user id are required" });
+            }
+            yield (0, User_1.deleteProductFromCart)(userId, productId);
+            res.status(200).json({ message: "product deleted from cart", });
+        }
+        catch (error) {
+            res.status(500).json({ message: "Unable to delete product from cart", error: error.message });
         }
     });
 }

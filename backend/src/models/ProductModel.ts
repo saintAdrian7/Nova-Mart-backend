@@ -1,6 +1,5 @@
-import mongoose, {Schema, Document} from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import { Product } from "../Interfaces/Product";
-import { ref } from "joi";
 
 export interface IProduct extends Product, Document {}
 
@@ -11,8 +10,8 @@ const ProductSchema = new Schema(
             required: true
         },
         Seller: {
-          type:Schema.Types.ObjectId,
-          ref: 'NovaMartUser'
+            type: Schema.Types.ObjectId,
+            ref: 'NovaMartUser'
         },
         Description: {
             type: String,
@@ -30,19 +29,22 @@ const ProductSchema = new Schema(
         },
         Category: {
             type: String,
-            required:true,
+            required: true,
             enum: [
-                'Electronics','Fashion','Home','Books','Sports','Beauty','Toys','Groceries','Automotive','Health'
-              ]
+                'Electronics', 'Fashion', 'Home', 'Books', 'Sports', 'Beauty', 'Toys', 'Groceries', 'Automotive', 'Health'
+            ]
         },
         ratings: {
             type: Number,
         },
         reviews: {
             type: [Schema.Types.ObjectId],
-            ref:'NovaMartUser'
+            ref: 'NovaMartUser'
         },
+    },
+    {
+        timestamps: true 
     }
-)
+);
 
-export default mongoose.model<IProduct>('Product', ProductSchema)
+export default mongoose.model<IProduct>('Product', ProductSchema);

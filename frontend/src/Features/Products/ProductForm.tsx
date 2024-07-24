@@ -13,6 +13,8 @@ import {
   CardActions,
 } from '@mui/material';
 import { useAuth } from '../../context/AuthContext/AuthContextConsts';
+import { PostProduct } from '../../context/ProductContext/ProductContextActions';
+import { useProduct } from '../../context/ProductContext/ProductContextConsts';
 
 const categories = [
   'Electronics', 'Fashion', 'Home', 'Books', 'Sports', 'Beauty', 'Toys', 'Groceries', 'Automotive', 'Health'
@@ -20,6 +22,7 @@ const categories = [
 
 const CreateProduct: React.FC = () => {
   const { state } = useAuth();
+  const { dispatch } = useProduct();
   const [productName, setProductName] = useState('');
   const [description, setDescription] = useState('');
   const [discountedPrice, setDiscountedPrice] = useState('');
@@ -32,8 +35,9 @@ const CreateProduct: React.FC = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      setImages(files);
-      const previews = files.map(file => URL.createObjectURL(file));
+      const newImages = [...images, ...files];
+      setImages(newImages);
+      const previews = newImages.map(file => URL.createObjectURL(file));
       setImagePreviews(previews);
     }
   };
@@ -65,11 +69,11 @@ const CreateProduct: React.FC = () => {
         Seller: state.loggedInUser?._id,
       };
 
-      const response = await axios.post('http://localhost:5000/api/products', productData);
-      const productId = response.data.productId
+      const response = await PostProduct(dispatch, productData);
+      const productId = response;
       await axios.patch(`http://localhost:5000/api/users/${state.loggedInUser?._id}`, {
-        products:[productId]
-      })
+        products: [productId]
+      });
 
       alert('Product created successfully');
       setProductName('');

@@ -19,6 +19,7 @@ exports.deleteUser = deleteUser;
 exports.createUser = createUser;
 exports.logInUser = logInUser;
 exports.updateUser = updateUser;
+exports.deleteProductFromCart = deleteProductFromCart;
 const config_1 = require("../config");
 const UserModel_1 = __importDefault(require("../models/UserModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -38,7 +39,14 @@ function getAllUsers() {
 function getUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const user = yield UserModel_1.default.findById(id).populate('products').populate('orders').populate('cart');
+            const user = yield UserModel_1.default.findById(id).populate('products').populate('cart').populate({
+                path: 'orders',
+                populate: {
+                    path: 'products.product',
+                    model: 'Product',
+                    select: 'Name Description DiscountedPrice Image'
+                }
+            });
             if (!user) {
                 throw new Error("No user was found with that id");
             }
@@ -131,3 +139,17 @@ const generateToken = (user) => {
     }, config_1.config.server.jwtSecret, { expiresIn: '1h' });
 };
 exports.generateToken = generateToken;
+function deleteProductFromCart(userId, productId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const user = yield UserModel_1.default.findById(userId);
+            if (!user)
+                throw new Error('User not found');
+            user.cart = user.cart.filter(item => item.toString() !== productId);
+            yield user.save();
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+}

@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getMostPopularProducts = exports.getRecentlyAddedProducts = exports.getProductsByCategory = void 0;
 exports.createProduct = createProduct;
 exports.getAllProducts = getAllProducts;
 exports.getOneProduct = getOneProduct;
@@ -30,6 +31,16 @@ function createProduct(product) {
         }
     });
 }
+const getProductsByCategory = (category) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield ProductModel_1.default.find({ Category: category });
+        return products;
+    }
+    catch (error) {
+        throw new Error(`Unable to get products by category: ${error.message}`);
+    }
+});
+exports.getProductsByCategory = getProductsByCategory;
 function getAllProducts() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -92,3 +103,23 @@ function deleteProduct(id) {
         }
     });
 }
+const getRecentlyAddedProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield ProductModel_1.default.find({}).sort({ createdAt: -1 }).limit(10);
+        return products;
+    }
+    catch (error) {
+        throw new Error(`Unable to get recently added products: ${error.message}`);
+    }
+});
+exports.getRecentlyAddedProducts = getRecentlyAddedProducts;
+const getMostPopularProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield ProductModel_1.default.find({}).sort({ Rating: -1 }).limit(10);
+        return products;
+    }
+    catch (error) {
+        throw new Error(`Unable to get most popular products: ${error.message}`);
+    }
+});
+exports.getMostPopularProducts = getMostPopularProducts;

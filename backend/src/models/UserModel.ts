@@ -38,7 +38,10 @@ const UserSchema = new Schema (
     cart: {
       type: [{type:Schema.Types.ObjectId, ref:'Product'}]
     }
-  }
+  },
+  {
+    timestamps: true 
+}
 )
 
 export default mongoose.model<IUser>('NovaMartUser', UserSchema)

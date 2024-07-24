@@ -19,7 +19,14 @@ try{
 
 export async function getUser(id:string):Promise <IUser | void>{
     try{
-        const user = await UserModel.findById(id).populate('products').populate('orders').populate('cart');
+        const user = await UserModel.findById(id).populate('products').populate('cart') .populate({
+            path: 'orders', 
+            populate: {
+              path: 'products.product', 
+              model: 'Product', 
+              select: 'Name Description DiscountedPrice Image' 
+            }
+          });
         if(!user){
             throw new Error("No user was found with that id")
         }else{
@@ -114,3 +121,17 @@ export async function updateUser(id: string, updateData: UpdateQuery<IUser>): Pr
     { expiresIn: '1h' } 
   );
 };
+
+export async function  deleteProductFromCart (userId:string, productId:string) {
+    try{
+        const user = await UserModel.findById(userId)
+        if(!user) throw new Error('User not found')
+        user.cart = user.cart.filter(item => item.toString() !== productId);
+        await user.save();
+
+    }catch(error:any){
+        throw error
+    }
+}
+
+

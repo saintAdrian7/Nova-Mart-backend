@@ -57,5 +57,7 @@ const UserSchema = new mongoose_1.Schema({
     cart: {
         type: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Product' }]
     }
+}, {
+    timestamps: true
 });
 exports.default = mongoose_1.default.model('NovaMartUser', UserSchema);

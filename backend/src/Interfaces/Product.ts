@@ -1,5 +1,4 @@
 export interface Product {
-    _id:string
     Name:string,
     price:number,
     description:string,
@@ -7,6 +6,7 @@ export interface Product {
     DiscountedPrice?:number,
     CashPrice:number,
     Category: 'Electronics'|'Fashion'|'Home'|'Books'|'Sports'|'Beauty'|'Toys'|'Groceries'|'Automotive'|'Health',
-    Seller:string
-
+    Seller:string,
+    Rating: number,
+    Reviews: string[]
 }

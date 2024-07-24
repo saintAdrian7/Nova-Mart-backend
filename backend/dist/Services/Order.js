@@ -44,7 +44,10 @@ function getOrders() {
 function getUserOrder(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const order = yield OrderModel_1.default.findOne({ user: userId }).populate('user').populate('products.product');
+            const order = yield OrderModel_1.default.findOne({ user: userId }).populate('user').populate({
+                path: 'products.product',
+                select: 'Name Description DiscountedPrice Image'
+            });
             if (!order) {
                 throw new Error("The Order does not exist");
             }

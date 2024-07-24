@@ -23,7 +23,11 @@ export async function getOrders():Promise <IOrder[]>{
 
 export async function getUserOrder(userId: string): Promise<IOrder | null> {
     try {
-      const order = await Order.findOne({ user: userId }).populate('user').populate('products.product');
+      const order = await Order.findOne({ user: userId }).populate('user') .populate({
+        path: 'products.product',
+        select: 'Name Description DiscountedPrice Image' 
+      });
+
       
       if (!order) {
         throw new Error("The Order does not exist");

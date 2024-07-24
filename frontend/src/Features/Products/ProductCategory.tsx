@@ -1,0 +1,134 @@
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Box, MenuItem, Select, CircularProgress, Divider, Alert, Grid } from '@mui/material';
+import { styled } from '@mui/system';
+import ProductCard from './ProductCard'; 
+import { FetchAllProducts, FetchMostPopularProducts, FetchProductsByCategory, FetchRecentlyAddedProducts } from '../../context/ProductContext/ProductContextActions';
+import { useProduct } from '../../context/ProductContext/ProductContextConsts';
+import { Product } from '../../Models/Models';
+
+const StyledContainer = styled(Container)({
+  padding: '2rem',
+  backgroundColor: '#f5f5f5',
+  borderRadius: '10px',
+  boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+});
+
+const StyledSelect = styled(Select)({
+  marginBottom: '1rem',
+});
+
+const ProductCategory: React.FC = () => {
+  const [category, setCategory] = useState<string>('All');
+  const { productState, dispatch } = useProduct();
+  const [recentProducts, setRecentProducts] = useState<Product[]>([]);
+  const [popularProducts, setPopularProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        if (category === 'All') {
+          await FetchAllProducts(dispatch);
+          const recentProductsData = await FetchRecentlyAddedProducts(dispatch);
+          const popularProductsData = await FetchMostPopularProducts(dispatch);
+          setRecentProducts(recentProductsData);
+          setPopularProducts(popularProductsData);
+        } else {
+          await FetchProductsByCategory(dispatch, category);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchProducts();
+  }, [category, dispatch]);
+
+  if (productState.loading) return <CircularProgress sx={{ position: 'absolute', left: '45%', top: '40%' }} />;
+
+  if (productState.error) {
+    return (
+      <StyledContainer maxWidth="lg">
+        <Alert sx={{ position: 'absolute', left: '30%', top: '40%' }} severity="error">
+          Unable to retrieve products at this time. Please try again later.
+        </Alert>
+      </StyledContainer>
+    );
+  }
+
+  if (!productState.products || productState.products.length === 0) {
+    return (
+      <StyledContainer maxWidth="lg">
+        <Typography>No products available.</Typography>
+      </StyledContainer>
+    );
+  }
+
+  return (
+    <StyledContainer maxWidth="lg">
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Product Categories
+        </Typography>
+        <StyledSelect
+          value={category}
+          onChange={(e) => setCategory(e.target.value as string)}
+          fullWidth
+        >
+          <MenuItem value="All">All Categories</MenuItem>
+          <MenuItem value="Electronics">Electronics</MenuItem>
+          <MenuItem value="Fashion">Fashion</MenuItem>
+          <MenuItem value="Home">Home</MenuItem>
+          <MenuItem value="Books">Books</MenuItem>
+          <MenuItem value="Sports">Sports</MenuItem>
+          <MenuItem value="Beauty">Beauty</MenuItem>
+          <MenuItem value="Toys">Toys</MenuItem>
+          <MenuItem value="Groceries">Groceries</MenuItem>
+          <MenuItem value="Automotive">Automotive</MenuItem>
+          <MenuItem value="Health">Health</MenuItem>
+        </StyledSelect>
+      </Box>
+
+      {category === 'All' && (
+        <>
+          <Divider sx={{ my: 4 }} />
+          <Typography variant="h5" gutterBottom>
+            Most Popular
+          </Typography>
+          <Grid container spacing={2}>
+            {popularProducts.map((product) => (
+              <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
+                <ProductCard product={product} />
+              </Grid>
+            ))}
+          </Grid>
+
+          <Divider sx={{ my: 4 }} />
+          <Typography variant="h5" gutterBottom>
+            Recently Added
+          </Typography>
+          <Grid container spacing={2}>
+            {recentProducts.map((product) => (
+              <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
+                <ProductCard product={product} />
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
+
+      <Divider sx={{ my: 4 }} />
+      <Typography variant="h5" gutterBottom>
+        {category} Products
+      </Typography>
+      <Grid container spacing={2}>
+        {productState.products.map((product) => (
+          <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
+            <ProductCard product={product} />
+          </Grid>
+        ))}
+      </Grid>
+    </StyledContainer>
+  );
+};
+
+export default ProductCategory;

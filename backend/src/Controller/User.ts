@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { createUser, deleteUser, generateToken, getAllUsers, getUser, logInUser, updateUser } from "../Services/User";
+import { createUser, deleteProductFromCart, deleteUser, generateToken, getAllUsers, getUser, logInUser, updateUser } from "../Services/User";
 import { IUser } from "../models/UserModel";
 import { invalidEmailorPasswordError } from "../Utils/User";
 
@@ -135,5 +135,20 @@ export async function getUsers(req:Request, res:Response) {
 
     }catch(error:any){
         res.status(500).json({message:"Unable to get users", error:error.message})
+    }
+}
+
+export  async function DeleteProductFromCart (req:Request, res:Response) {
+    const productId = req.params.productId
+    const userId = req.params.userId
+    try{
+        if(!productId || !userId){
+            return res.status(400).json({message:"Product id and user id are required"})
+        }
+         await deleteProductFromCart(userId, productId)
+        res.status(200).json({message:"product deleted from cart",})
+
+    }catch(error:any){
+        res.status(500).json({message:"Unable to delete product from cart", error:error.message})
     }
 }

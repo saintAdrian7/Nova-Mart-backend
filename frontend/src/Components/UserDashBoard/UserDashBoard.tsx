@@ -1,41 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Box, Avatar, Grid, Card, CardContent, CardMedia, Divider } from '@mui/material';
+import { Container, Typography, Box, Avatar, Grid, Card, CardContent, CardMedia, Divider, Paper } from '@mui/material';
 import axios from 'axios';
 import { styled } from '@mui/system';
-import { motion } from 'framer-motion';
-import Slider from 'react-slick';
 import { useAuth } from '../../context/AuthContext/AuthContextConsts';
 import { User } from '../../Models/Models';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import CreateProduct from '../../Features/Products/ProductForm';
+import ShoppingCart from '../../Features/ShoppingCart/ShoppingCart';
 
-const StyledContainer = styled(Container)({
+const StyledContainer = styled(Container)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
   padding: '2rem',
   backgroundColor: '#f5f5f5',
   borderRadius: '10px',
   boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+  },
+}));
+
+const MainContent = styled(Box)({
+  flex: '1',
 });
 
-const StyledCard = styled(Card)({
-  transition: 'transform 0.2s ease-in-out',
-  '&:hover': {
-    transform: 'scale(1.05)',
+const Sidebar = styled(Box)(({ theme }) => ({
+  width: '600px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '2rem',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
   },
-});
-
-
-
-const ImageCarousel = styled(Slider)({
-  '& .slick-slide': {
-    padding: '0 10px',
-  },
-  '& .slick-list': {
-    margin: '0 -10px',
-  },
-  '& .slick-dots': {
-    bottom: '10px',
-  },
-});
+}));
 
 const UserDashboard: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -56,59 +54,43 @@ const UserDashboard: React.FC = () => {
 
   if (!user) return <Typography>Loading...</Typography>;
 
-  const carouselSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
-
   const truncateDescription = (description: string, maxLength: number = 200) => {
     return description.length > maxLength ? `${description.substring(0, maxLength)}...` : description;
   };
 
   return (
     <StyledContainer maxWidth="lg">
-      <Box sx={{  mb: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Welcome, {user.firstName} {user.lastName}
-        </Typography>
-        <Avatar sx={{ width: 100,
-          height: 100,
-         marginBottom: '1rem',
-         boxShadow: '0 4px 8px rgba(0,0,0,0.2)'}}  src={user.image} alt={user.firstName} />
-        <Typography variant="h6">Email: {user.email}</Typography>
-        <Typography variant="h6">Role: {user.role}</Typography>
-      </Box>
+      <MainContent>
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" gutterBottom>
+            Welcome, {user.firstName} {user.lastName}
+          </Typography>
+          <Avatar
+            sx={{ width: 100, height: 100, marginBottom: '1rem', boxShadow: '0 4px 8px rgba(0,0,0,0.2)' }}
+            src={user.image}
+            alt={user.firstName}
+          />
+          <Typography variant="h6">Email: {user.email}</Typography>
+          <Typography variant="h6">Role: {user.role}</Typography>
+        </Box>
 
-      <Divider />
+        <Divider />
 
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Your Products
-        </Typography>
-        <Grid container spacing={3}>
-          {user.products.map((product) => (
-            <Grid item xs={12} sm={6} md={4} key={product._id}>
-              <motion.div whileHover={{ scale: 1.05 }}>
-                <StyledCard>
-                  {product.Image.length > 1 ? (
-                    <ImageCarousel {...carouselSettings}>
-                      {product.Image.map((img, index) => (
-                        <div key={index}>
-                          <img src={img} alt={product.Name} style={{ width: '100%', height: 'auto' }} />
-                        </div>
-                      ))}
-                    </ImageCarousel>
-                  ) : (
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image={product.Image[0]}
-                      alt={product.Name}
-                    />
-                  )}
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            Your Products
+          </Typography>
+          <Grid container spacing={3}>
+            {user.products.map((product) => (
+              <Grid item xs={12} sm={6} md={4} key={product._id}>
+                <Card>
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={product.Image[0]}
+                    alt={product.Name}
+                    style={{ objectFit: 'cover' }}
+                  />
                   <CardContent>
                     <Typography variant="h6">{product.Name}</Typography>
                     <Typography variant="body2" color="textSecondary" noWrap>
@@ -123,22 +105,20 @@ const UserDashboard: React.FC = () => {
                       </Typography>
                     </Box>
                   </CardContent>
-                </StyledCard>
-              </motion.div>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
 
-      <Divider sx={{ my: 4 }} />
+        <Divider sx={{ my: 4 }} />
 
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Your Orders
-        </Typography>
-        {user.orders.map((order) => (
-          <motion.div whileHover={{ scale: 1.05 }} key={order._id}>
-            <StyledCard sx={{ mb: 2 }}>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            Your Orders
+          </Typography>
+          {user.orders.map((order) => (
+            <Card key={order._id} sx={{ mb: 2 }}>
               <CardContent>
                 <Typography variant="h6">Order ID: {order._id}</Typography>
                 <Typography>Status: {order.status}</Typography>
@@ -150,10 +130,19 @@ const UserDashboard: React.FC = () => {
                   </Typography>
                 ))}
               </CardContent>
-            </StyledCard>
-          </motion.div>
-        ))}
-      </Box>
+            </Card>
+          ))}
+        </Box>
+      </MainContent>
+
+      <Sidebar>
+        <Paper elevation={3} sx={{ padding: '1rem', borderRadius: '10px' }}>
+          <ShoppingCart />
+        </Paper>
+        <Paper elevation={3} sx={{ padding: '1rem', borderRadius: '10px' }}>
+          <CreateProduct />
+        </Paper>
+      </Sidebar>
     </StyledContainer>
   );
 };

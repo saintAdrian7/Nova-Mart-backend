@@ -42,15 +42,27 @@ export interface Order  {
   }
 
   export interface Product {
-    _id:string
+    _id?:string
     Name:string,
-    price:number,
     Description:string,
-    image:string[],
-    DiscountedPrice?:number,
+    DiscountedPrice:number,
     CashPrice:number,
     Category: 'Electronics'|'Fashion'|'Home'|'Books'|'Sports'|'Beauty'|'Toys'|'Groceries'|'Automotive'|'Health',
     Seller:string,
-    Image:string[]
+    Image:string[],
+    Rating?:number,
+    Reviews?:string
 
+}
+
+export interface ProductPayload {
+    Name:string,
+    Description:string,
+    DiscountedPrice?:string,
+    CashPrice:string,
+    Category: string,
+    Seller:string | undefined,
+    Image:string[],
+    Rating?:number,
+    Reviews?:string
 }
