@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMostPopularProducts = exports.getRecentlyAddedProducts = exports.getProductsByCategory = void 0;
+exports.handleSearchQuery = exports.getMostPopularProducts = exports.getRecentlyAddedProducts = exports.getProductsByCategory = void 0;
 exports.createProduct = createProduct;
 exports.getAllProducts = getAllProducts;
 exports.getOneProduct = getOneProduct;
@@ -123,3 +123,49 @@ const getMostPopularProducts = () => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getMostPopularProducts = getMostPopularProducts;
+const handleSearchQuery = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    const { query, category, minPrice, maxPrice, minRating, maxRating, sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10, } = params;
+    try {
+        const searchConditions = {};
+        if (query) {
+            searchConditions.$or = [
+                { Name: new RegExp(query, 'i') },
+                { Description: new RegExp(query, 'i') }
+            ];
+        }
+        if (category) {
+            searchConditions.Category = category;
+        }
+        if (minPrice !== undefined || maxPrice !== undefined) {
+            searchConditions.DiscountedPrice = {};
+            if (minPrice !== undefined) {
+                searchConditions.DiscountedPrice.$gte = minPrice;
+            }
+            if (maxPrice !== undefined) {
+                searchConditions.DiscountedPrice.$lte = maxPrice;
+            }
+        }
+        if (minRating !== undefined || maxRating !== undefined) {
+            if (minRating !== undefined) {
+                searchConditions.ratings.$gte = minRating;
+            }
+            if (maxRating !== undefined) {
+                searchConditions.ratings.$lte = maxRating;
+            }
+        }
+        const sortOptions = {};
+        if (sortBy) {
+            sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
+        }
+        const products = yield ProductModel_1.default.find(searchConditions)
+            .sort(sortOptions)
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .exec();
+        return products;
+    }
+    catch (error) {
+        throw new Error(`Unable to handle search query: ${error.message}`);
+    }
+});
+exports.handleSearchQuery = handleSearchQuery;

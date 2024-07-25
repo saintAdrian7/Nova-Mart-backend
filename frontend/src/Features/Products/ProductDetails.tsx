@@ -38,9 +38,35 @@ const ProductDetails: React.FC = () => {
   return (
     <Container maxWidth="lg">
       <Box sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
-          {product.Name}
-        </Typography>
+      <Typography
+      variant="h4"
+      gutterBottom
+      sx={{
+        fontWeight: 'bold',
+        color: '#ecf0f1', 
+        textTransform: 'uppercase',
+        letterSpacing: '2px',
+        backgroundColor: '#34495e', 
+        border: '2px solid #c0392b', 
+        borderRadius: '8px',
+        padding: '10px 15px',
+        display: 'inline-block',
+        fontFamily: '"Roboto", sans-serif',
+        textAlign: 'center',
+        boxShadow: '0 6px 12px rgba(0, 0, 0, 0.6)',
+        transform: 'rotate(2deg)', 
+        transition: 'all 0.3s ease-in-out',
+        '&:hover': {
+          backgroundColor: '#2c3e50', 
+          color: '#e74c3c', 
+          borderColor: '#e74c3c', 
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
+          transform: 'rotate(-2deg)',
+        },
+      }}
+    >
+      {product.Name}
+    </Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <Card variant="outlined" sx={{ borderRadius: 2, boxShadow: 3 }}>

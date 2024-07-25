@@ -12,6 +12,7 @@ router.get('/product/:id', Product_1.GetProduct);
 router.get('/category/:category', Product_1.GetProductsByCategory);
 router.get('/popular', Product_1.GetMostPopularProducts);
 router.get('/recent', Product_1.GetRecentlyAddedProducts);
+router.get('/search', Product_1.HandleSearchProducts);
 router.patch('/:id', Product_1.UpdateProduct);
 router.delete('/:id', Product_1.DeleteProduct);
 exports.default = router;

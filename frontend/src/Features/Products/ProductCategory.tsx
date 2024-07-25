@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, MenuItem, Select, CircularProgress, Divider, Alert, Grid } from '@mui/material';
+import { Container, Typography, Box, MenuItem, Select, Divider, Alert, Grid, Button } from '@mui/material';
 import { styled } from '@mui/system';
 import ProductCard from './ProductCard'; 
 import { FetchAllProducts, FetchMostPopularProducts, FetchProductsByCategory, FetchRecentlyAddedProducts } from '../../context/ProductContext/ProductContextActions';
 import { useProduct } from '../../context/ProductContext/ProductContextConsts';
 import { Product } from '../../Models/Models';
+import SearchComponent from './Search';
 
 const StyledContainer = styled(Container)({
   padding: '2rem',
@@ -19,6 +20,7 @@ const StyledSelect = styled(Select)({
 
 const ProductCategory: React.FC = () => {
   const [category, setCategory] = useState<string>('All');
+  const [showSearch, setShowSearch] = useState<boolean>(false);
   const { productState, dispatch } = useProduct();
   const [recentProducts, setRecentProducts] = useState<Product[]>([]);
   const [popularProducts, setPopularProducts] = useState<Product[]>([]);
@@ -43,7 +45,13 @@ const ProductCategory: React.FC = () => {
     fetchProducts();
   }, [category, dispatch]);
 
-  if (productState.loading) return <CircularProgress sx={{ position: 'absolute', left: '45%', top: '40%' }} />;
+  if (productState.loading) return  (
+   <Box  sx={{ position: 'absolute', left: '25%', top: '40%' }}>
+     <Typography variant='h4' sx={{fontFamily:'Inder'}}>
+      Loading Products....Please Wait
+     </Typography>
+   </Box>
+  )
 
   if (productState.error) {
     return (
@@ -66,9 +74,6 @@ const ProductCategory: React.FC = () => {
   return (
     <StyledContainer maxWidth="lg">
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Product Categories
-        </Typography>
         <StyledSelect
           value={category}
           onChange={(e) => setCategory(e.target.value as string)}
@@ -86,7 +91,18 @@ const ProductCategory: React.FC = () => {
           <MenuItem value="Automotive">Automotive</MenuItem>
           <MenuItem value="Health">Health</MenuItem>
         </StyledSelect>
+        
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={() => setShowSearch(!showSearch)}
+          sx={{ mb: 2 }}
+        >
+          {showSearch ? 'Hide Search' : 'Search Products'}
+        </Button>
       </Box>
+
+      {showSearch && <SearchComponent />}
 
       {category === 'All' && (
         <>

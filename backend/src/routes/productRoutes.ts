@@ -1,5 +1,5 @@
 import express from 'express';
-import { DeleteProduct, GetAllProducts, GetMostPopularProducts, GetProduct, GetProductsByCategory, GetRecentlyAddedProducts, PostProduct, UpdateProduct } from '../Controller/Product';
+import { DeleteProduct, GetAllProducts, GetMostPopularProducts, GetProduct, GetProductsByCategory, GetRecentlyAddedProducts, HandleSearchProducts, PostProduct, UpdateProduct } from '../Controller/Product';
 const router = express.Router();
 
 
@@ -9,6 +9,7 @@ router.get('/product/:id',GetProduct)
 router.get('/category/:category', GetProductsByCategory)
 router.get('/popular', GetMostPopularProducts)
 router.get('/recent', GetRecentlyAddedProducts)
+router.get('/search', HandleSearchProducts)
 router.patch('/:id', UpdateProduct)
 router.delete('/:id', DeleteProduct)
 export default router;

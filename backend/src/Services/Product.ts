@@ -1,4 +1,4 @@
-import { Product } from "../Interfaces/Product";
+import { Product, searchParams } from "../Interfaces/Product";
 import ProductModel, { IProduct } from "../models/ProductModel";
 import { UnableToSaveUserError } from "../Utils/User";
 
@@ -101,3 +101,63 @@ export const getMostPopularProducts = async (): Promise<Product[]> => {
         throw new Error(`Unable to get most popular products: ${error.message}`);
     }
 };
+
+
+export const handleSearchQuery = async (params:searchParams): Promise<Product[] | null> => {
+    const {
+        query,
+        category,
+        minPrice,
+        maxPrice,
+        minRating,
+        maxRating,
+        sortBy = 'createdAt',
+        sortOrder = 'desc',
+        page=1,
+        limit=10,   
+    } = params
+
+    try{
+        const searchConditions:any = {}
+        if(query){
+            searchConditions.$or = [
+                {Name: new RegExp(query, 'i')},
+                {Description: new RegExp(query, 'i')}
+            ]
+        }
+        if(category){
+            searchConditions.Category = category
+        }
+        if(minPrice !== undefined || maxPrice !== undefined){
+            searchConditions.DiscountedPrice = {}
+            if(minPrice !== undefined){
+                searchConditions.DiscountedPrice.$gte = minPrice
+            }
+            if(maxPrice !== undefined){
+                searchConditions.DiscountedPrice.$lte = maxPrice
+            }
+        }
+        if(minRating !== undefined || maxRating !== undefined){
+            if(minRating !==undefined){
+                searchConditions.ratings.$gte = minRating 
+            } 
+            if(maxRating !== undefined){
+                searchConditions.ratings.$lte = maxRating
+            }
+        }
+        const sortOptions:any = {}
+        if(sortBy){
+            sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
+        }
+      const products = await ProductModel.find(searchConditions)
+      .sort(sortOptions)
+      .skip((page-1)* limit)
+      .limit(limit)
+      .exec()
+      return products
+    }catch(error:any){
+        throw new Error(`Unable to handle search query: ${error.message}`)
+    }
+
+
+}

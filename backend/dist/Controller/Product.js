@@ -17,6 +17,7 @@ exports.DeleteProduct = DeleteProduct;
 exports.GetProductsByCategory = GetProductsByCategory;
 exports.GetMostPopularProducts = GetMostPopularProducts;
 exports.GetRecentlyAddedProducts = GetRecentlyAddedProducts;
+exports.HandleSearchProducts = HandleSearchProducts;
 const Product_1 = require("../Services/Product");
 function PostProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -162,6 +163,23 @@ function GetRecentlyAddedProducts(req, res) {
         }
         catch (error) {
             res.status(500).json({ message: "Unable to get products at this time", error: error.message });
+        }
+    });
+}
+function HandleSearchProducts(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const searchParams = req.query;
+        try {
+            const products = yield (0, Product_1.handleSearchQuery)(searchParams);
+            if (products) {
+                res.status(200).json({ message: "Retrieved products successfully", products });
+            }
+            else {
+                res.status(404).json({ message: "No products found" });
+            }
+        }
+        catch (error) {
+            res.status(500).json({ message: "Unable to search products at this time", error: error.messsage });
         }
     });
 }

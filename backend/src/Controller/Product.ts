@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import { createProduct, deleteProduct, getAllProducts, getMostPopularProducts, getOneProduct, getProductsByCategory, getRecentlyAddedProducts, updateProduct } from "../Services/Product";
+import { createProduct, deleteProduct, getAllProducts, getMostPopularProducts, getOneProduct, getProductsByCategory, getRecentlyAddedProducts, handleSearchQuery, updateProduct } from "../Services/Product";
 import { IProduct } from "../models/ProductModel";
+import { searchParams } from "../Interfaces/Product";
+import { log } from "console";
 
 export async function PostProduct (req:Request, res:Response){
     const product = req.body
@@ -134,5 +136,22 @@ export async function GetRecentlyAddedProducts(req: Request, res: Response) {
       res.status(200).json({ message: "Retrieved recently added products successfully", products });
   } catch (error: any) {
       res.status(500).json({ message: "Unable to get products at this time", error: error.message });
+  }
+}
+
+export async function HandleSearchProducts(req:Request, res:Response) {
+  const searchParams:searchParams = req.query
+
+  
+  try{
+    const products = await handleSearchQuery(searchParams)
+    if(products){
+      res.status(200).json({message:"Retrieved products successfully", products})
+    }else{
+      res.status(404).json({message:"No products found"})
+    }
+
+  }catch(error:any){
+    res.status(500).json({message:"Unable to search products at this time", error:error.messsage})
   }
 }
