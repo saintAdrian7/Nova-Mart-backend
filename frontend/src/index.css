@@ -43,5 +43,48 @@ p{
   font-size: 1.25rem;
   font-weight: 400;
 }
+.homepage{
+  min-height: 100vh;
+}
 
 
+.order-management{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.order-history{
+  width: 600px;
+  height: fit-content;
+  margin-left: 100px;
+  margin-top: 40px;
+}
+.users{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+@media only screen and (max-width: 1000px) {
+  .order-management{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.order-history{
+  width: 100%;
+  height: fit-content;
+  margin-left: 0;
+}
+.users{
+  display: flex;
+  flex-direction: column;
+}
+.users-cards{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+}

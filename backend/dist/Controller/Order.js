@@ -14,6 +14,7 @@ exports.getUserOrderController = getUserOrderController;
 exports.updateOrderController = updateOrderController;
 exports.deleteOrderController = deleteOrderController;
 exports.getOrdersController = getOrdersController;
+exports.GetDeliveredOrders = GetDeliveredOrders;
 const Order_1 = require("../Services/Order");
 function createOrderController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -93,6 +94,22 @@ function getOrdersController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const orders = yield (0, Order_1.getOrders)();
+            res.status(200).json({ message: "Orders retrieved successfully", orders });
+        }
+        catch (error) {
+            console.error(error.message);
+            res.status(500).json({ message: "Unable to retrieve orders", error: error.message });
+        }
+    });
+}
+function GetDeliveredOrders(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const userId = req.params.userId;
+        try {
+            if (!userId) {
+                return res.status(400).json({ message: "User ID is required" });
+            }
+            const orders = yield (0, Order_1.getOrderHistory)(userId);
             res.status(200).json({ message: "Orders retrieved successfully", orders });
         }
         catch (error) {

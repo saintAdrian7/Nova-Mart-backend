@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createOrder, deleteOrder, getOrders, getUserOrder, updateOrder } from '../Services/Order';
+import { createOrder, deleteOrder, getOrderHistory, getOrders, getUserOrder, updateOrder } from '../Services/Order';
 
 
 
@@ -97,4 +97,21 @@ export async function updateOrderController(req: Request, res: Response) {
         console.error(error.message);
         res.status(500).json({ message: "Unable to retrieve orders", error: error.message });
     }
+}
+
+
+export async function GetDeliveredOrders (req:Request, res:Response) {
+  const userId = req.params.userId
+  try{
+    if(!userId){
+      return res.status(400).json({message: "User ID is required" })
+    }
+    const orders = await getOrderHistory(userId)
+    res.status(200).json({message: "Orders retrieved successfully", orders})
+
+  }catch(error:any){
+    console.error(error.message)
+    res.status(500).json({message: "Unable to retrieve orders", error: error.message})
+
+  }
 }

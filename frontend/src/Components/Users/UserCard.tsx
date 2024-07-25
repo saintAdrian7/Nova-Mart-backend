@@ -5,14 +5,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import { User } from "../../Models/Models";
 
-const UserCard: React.FC<{ user: User; onEdit: (id: string, role: string) => void; onDelete: (id: string) => void;  }> = ({ user, onEdit, onDelete }) => {
+
+const UserCard: React.FC<{ user: User; onUserClick: (id:string) => void, onEdit: (id: string, role: string) => void; onDelete: (id: string) => void;  }> = ({ user, onEdit, onUserClick, onDelete }) => {
   const handleEdit = () => {
     const newRole = user.role === 'ADMIN' ? 'USER' : 'ADMIN';
     onEdit(user._id, newRole);
   };
 
+
   return (
-    <Card
+    <Card 
       sx={{
         maxWidth: 345,
         margin: "16px",
@@ -47,8 +49,8 @@ const UserCard: React.FC<{ user: User; onEdit: (id: string, role: string) => voi
           }}
         >
           <Tooltip title="View Details">
-            <IconButton color="primary" >
-              <InfoIcon />
+            <IconButton onClick={()=>onUserClick(user._id)} color="primary" >
+              <InfoIcon  />
             </IconButton>
           </Tooltip>
           <Tooltip title="Edit">

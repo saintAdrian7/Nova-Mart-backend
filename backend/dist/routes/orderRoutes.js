@@ -9,6 +9,7 @@ const router = express_1.default.Router();
 router.post('/', Order_1.createOrderController);
 router.get('/', Order_1.getOrdersController);
 router.get('/:userId', Order_1.getUserOrderController);
+router.get('/delivered/:userId', Order_1.GetDeliveredOrders);
 router.patch('/:orderId', Order_1.updateOrderController);
 router.delete('/:orderId', Order_1.deleteOrderController);
 exports.default = router;

@@ -17,6 +17,7 @@ exports.getOrders = getOrders;
 exports.getUserOrder = getUserOrder;
 exports.updateOrder = updateOrder;
 exports.deleteOrder = deleteOrder;
+exports.getOrderHistory = getOrderHistory;
 const OrderModel_1 = __importDefault(require("../models/OrderModel"));
 function createOrder(orderData) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -45,7 +46,7 @@ function getUserOrder(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const order = yield OrderModel_1.default.findOne({ user: userId }).populate('user').populate({
-                path: 'products.product',
+                path: 'products',
                 select: 'Name Description DiscountedPrice Image'
             });
             if (!order) {
@@ -90,6 +91,20 @@ function deleteOrder(orderId) {
         catch (error) {
             console.error(error.message);
             throw new Error("Error deleting order");
+        }
+    });
+}
+function getOrderHistory(userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const deliveredOrders = yield OrderModel_1.default.find({ user: userId, status: 'Delivered' }).populate({
+                path: 'products.product',
+            });
+            return deliveredOrders;
+        }
+        catch (error) {
+            console.error('Error fetching order history:', error.message);
+            throw new Error("Error retrieving order history");
         }
     });
 }

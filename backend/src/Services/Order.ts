@@ -1,3 +1,4 @@
+import { log } from "console";
 import Order, { IOrder } from "../models/OrderModel";
 
 
@@ -24,7 +25,7 @@ export async function getOrders():Promise <IOrder[]>{
 export async function getUserOrder(userId: string): Promise<IOrder | null> {
     try {
       const order = await Order.findOne({ user: userId }).populate('user') .populate({
-        path: 'products.product',
+        path: 'products',
         select: 'Name Description DiscountedPrice Image' 
       });
 
@@ -75,3 +76,15 @@ export async function getUserOrder(userId: string): Promise<IOrder | null> {
     }
   }
   
+  export async function getOrderHistory(userId: string): Promise<IOrder[] | null> {
+    try {
+      const deliveredOrders = await Order.find({ user: userId, status: 'Delivered' }).populate({
+        path: 'products.product',
+      });
+
+      return deliveredOrders;
+    } catch (error: any) {
+      console.error('Error fetching order history:', error.message);
+      throw new Error("Error retrieving order history");
+    }
+  }

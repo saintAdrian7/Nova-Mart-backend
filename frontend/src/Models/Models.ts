@@ -32,7 +32,7 @@ export interface FetchUserPayload{
 
 export interface Order  {
     _id:string
-    user: string
+    user: User
     products: {
       product:Product;
       quantity: number;
