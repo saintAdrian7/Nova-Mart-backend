@@ -19,10 +19,15 @@ const AddToCart: React.FC<AddToCartProps> = ({ productId }) => {
     }
 
     try {
+      const token = localStorage.getItem('token')
       
       dispatch({ type: 'ADD TO CART', payload: productId as string });
-      await axios.patch(`http://localhost:5000/api/users/${state.loggedInUser._id}`, {
+      await axios.patch(`http://localhost:5000/api/users/${state.loggedInUser._id}`,  {
         cart: [...state.loggedInUser.cart, productId],
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
 
       setOpen(true);

@@ -21,6 +21,7 @@ const CheckoutPage: React.FC = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+const token = localStorage.getItem('token')
 
 
   useEffect(() => {
@@ -94,10 +95,19 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('s
           quantity: item.quantity,
         })),
         totalAmount,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       await axios.patch(`http://localhost:5000/api/users/${state.loggedInUser?._id}`, {
         orders:[response.data.order._id],
         cart:[]
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       })
       setSnackbarMessage('Order submitted successfully!');
       setSnackbarSeverity('success');

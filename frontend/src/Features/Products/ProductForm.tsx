@@ -68,12 +68,18 @@ const CreateProduct: React.FC = () => {
         Image: imageUrls,
         Seller: state.loggedInUser?._id,
       };
-
+      const token = localStorage.getItem('token')
       const response = await PostProduct(dispatch, productData);
       const productId = response;
       await axios.patch(`http://localhost:5000/api/users/${state.loggedInUser?._id}`, {
         products: [productId]
-      });
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
 
       alert('Product created successfully');
       setProductName('');
@@ -92,9 +98,6 @@ const CreateProduct: React.FC = () => {
   return (
     <Container maxWidth="md">
       <Box sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Create Product
-        </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
@@ -154,9 +157,10 @@ const CreateProduct: React.FC = () => {
           <Button
             variant="contained"
             component="label"
-            sx={{ mt: 2, mb: 2 }}
+            sx={{ mt: 2, mb: 2 , ml: 20}}
           >
             Upload Images
+            
             <input
               type="file"
               hidden

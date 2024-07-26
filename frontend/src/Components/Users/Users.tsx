@@ -26,18 +26,25 @@ const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User>()
   const [searchTerm, setSearchTerm] = useState('');
+  const token = localStorage.getItem('token')
 
   const handleUserClick = async (id:string) => {
     const response = await axios.get(`http://localhost:5000/api/users/${id}`)
     setSelectedUser(response.data.user)
-    console.log(selectedUser);
+   
     
   }
 
   
 
   const fetchAllUsers = async () => {
-    const response = await axios.get("http://localhost:5000/api/users");
+    const response = await axios.get("http://localhost:5000/api/users",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
     setUsers(response.data.users);
   };
 
@@ -47,7 +54,13 @@ const UserManagement: React.FC = () => {
 
   const handleEdit = async (id: string, role: string) => {
     try {
-      await axios.patch(`http://localhost:5000/api/users/${id}`, { role });
+      await axios.patch(`http://localhost:5000/api/users/${id}`, { role },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
       fetchAllUsers()
       
     } catch (error) {
@@ -57,7 +70,13 @@ const UserManagement: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      await axios.delete(`http://localhost:5000/api/users/user/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
       setUsers(users.filter(user => user._id !== id));
     } catch (error) {
       console.error("Error deleting user:", error);

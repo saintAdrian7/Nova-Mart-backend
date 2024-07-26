@@ -16,8 +16,15 @@ const AdminOrders: React.FC = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
+      const token = localStorage.getItem('token')
       try {
-        const response = await axios.get('http://localhost:5000/api/orders'); 
+        const response = await axios.get('http://localhost:5000/api/orders',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        ); 
         setOrders(response.data.orders);
         setLoading(false);
       } catch (error) {
@@ -39,9 +46,17 @@ const AdminOrders: React.FC = () => {
   };
 
   const handleStatusChange = async (orderId: string, newStatus: Order['status']) => {
-    await axios.patch(`http://localhost:5000/api/orders/${orderId}`, {
-        status: newStatus
-    })
+    const token = localStorage.getItem('token');
+
+    await axios.patch(
+      `http://localhost:5000/api/orders/${orderId}`, 
+      { status: newStatus },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
     setOrders(orders.map(order => 
       order._id === orderId ? { ...order, status: newStatus } : order
     ));

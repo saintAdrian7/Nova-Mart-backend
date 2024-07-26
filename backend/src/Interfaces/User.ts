@@ -10,3 +10,12 @@ export interface User {
     orders: mongoose.Types.ObjectId[];
     cart: mongoose.Types.ObjectId[];
 }
+
+export interface JwtPayload {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+  }
+  

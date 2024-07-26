@@ -20,6 +20,7 @@ exports.createUser = createUser;
 exports.logInUser = logInUser;
 exports.updateUser = updateUser;
 exports.deleteProductFromCart = deleteProductFromCart;
+exports.verifyToken = verifyToken;
 const config_1 = require("../config");
 const UserModel_1 = __importDefault(require("../models/UserModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -130,13 +131,13 @@ function updateUser(id, updateData) {
     });
 }
 const generateToken = (user) => {
-    console.log(config_1.config.server.jwtSecret);
     return jsonwebtoken_1.default.sign({
         id: user._id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-    }, config_1.config.server.jwtSecret, { expiresIn: '1h' });
+        role: user.role
+    }, config_1.config.server.jwtSecret, { expiresIn: '2h' });
 };
 exports.generateToken = generateToken;
 function deleteProductFromCart(userId, productId) {
@@ -152,4 +153,18 @@ function deleteProductFromCart(userId, productId) {
             throw error;
         }
     });
+}
+function verifyToken(token) {
+    try {
+        const secretKey = config_1.config.server.jwtSecret;
+        if (!secretKey) {
+            throw new Error('No secret key found');
+        }
+        const decoded = jsonwebtoken_1.default.verify(token, secretKey);
+        return decoded;
+    }
+    catch (error) {
+        console.error('Invalid token', error);
+        return null;
+    }
 }

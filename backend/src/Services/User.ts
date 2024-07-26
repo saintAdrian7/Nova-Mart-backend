@@ -1,6 +1,6 @@
 
 import { config } from "../config";
-import { User } from "../Interfaces/User";
+import { JwtPayload, User } from "../Interfaces/User";
 import UserModel, { IUser } from "../models/UserModel";
 import  jwt  from "jsonwebtoken";
 import bcrypt from 'bcrypt';
@@ -109,16 +109,16 @@ export async function updateUser(id: string, updateData: UpdateQuery<IUser>): Pr
 
 
   export const generateToken = (user: IUser) => {
-    console.log(config.server.jwtSecret)
   return jwt.sign(
     {
       id: user._id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      role:user.role
     },
     config.server.jwtSecret, 
-    { expiresIn: '1h' } 
+    { expiresIn: '2h' } 
   );
 };
 
@@ -135,3 +135,18 @@ export async function  deleteProductFromCart (userId:string, productId:string) {
 }
 
 
+export  function verifyToken (token:string):JwtPayload | null{
+    try{
+        const secretKey = config.server.jwtSecret
+        if(!secretKey){
+            throw new Error('No secret key found')
+        }
+        const decoded = jwt.verify(token, secretKey) as JwtPayload
+        return decoded
+    }catch(error:any){
+        console.error('Invalid token', error)
+        return null
+
+    }
+
+}

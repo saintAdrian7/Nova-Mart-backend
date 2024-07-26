@@ -6,10 +6,14 @@ import { Product } from '../../Models/Models';
 import { useNavigate } from 'react-router';
 
 const StyledCard = styled(Card)({
+  height: '400px',
   transition: 'transform 0.2s ease-in-out',
   '&:hover': {
     transform: 'scale(1.05)',
   },
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
 });
 
 const ImageCarousel = styled(Slider)({
@@ -24,12 +28,22 @@ const ImageCarousel = styled(Slider)({
   },
 });
 
+const ImageContainer = styled('div')({
+  height: '200px',
+  overflow: 'hidden',
+  '& img': {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+});
+
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const carouselSettings = {
     dots: true,
     infinite: true,
@@ -44,29 +58,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       ? description.substring(0, maxLength) + '...'
       : description;
   };
-  const handleProductClick = (id:string | undefined) => {
-    navigate(`/product/${id}`)
 
-  }
+  const handleProductClick = (id: string | undefined) => {
+    navigate(`/product/${id}`);
+  };
 
   return (
-    <StyledCard onClick={ ()=> handleProductClick(product._id)}>
-      {product.Image && product.Image.length > 1 ? (
-        <ImageCarousel {...carouselSettings}>
-          {product.Image.map((img, index) => (
-            <div key={index}>
-              <img src={img} alt={product.Name} style={{ width: '100%', height: 'auto' }} />
-            </div>
-          ))}
-        </ImageCarousel>
-      ) : (
-        <CardMedia
-          component="img"
-          height="140"
-          image={product.Image && product.Image[0]}
-          alt={product.Name}
-        />
-      )}
+    <StyledCard onClick={() => handleProductClick(product._id)}>
+      <ImageContainer>
+        {product.Image && product.Image.length > 1 ? (
+          <ImageCarousel {...carouselSettings}>
+            {product.Image.map((img, index) => (
+              <div key={index}>
+                <img src={img} alt={product.Name} />
+              </div>
+            ))}
+          </ImageCarousel>
+        ) : (
+          <CardMedia
+            component="img"
+            image={product.Image && product.Image[0]}
+            alt={product.Name}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        )}
+      </ImageContainer>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {product.Name}
