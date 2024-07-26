@@ -9,18 +9,12 @@ import { LoginUserPayload, RegisterUserPayload } from '../../Models/Models';
 export const LoginUser = async (dispatch: React.Dispatch<Action>, user: LoginUserPayload) => {
   dispatch({ type: 'LOGIN REQUEST' });
   try {
-    const response = await axios.post('http://localhost:5000/api/users/login', user);
+    const response = await axios.post('https://nova-mart-server.onrender.com/api/users/login', user);
     const currentLoggedInUser = response.data.user;
     const userId = currentLoggedInUser._id;
     if (currentLoggedInUser && currentLoggedInUser._id) {
       sessionStorage.setItem("userId", userId.toString());
       localStorage.setItem("token", response.data.token)
-      setTimeout(() => {
-        localStorage.removeItem('token');
-        sessionStorage.removeItem("userId")
-        dispatch({ type: 'LOGOUT' });
-      
-      },216000);
     } else {
       console.error("User ID not found in response");
     }
@@ -36,7 +30,7 @@ export const LoginUser = async (dispatch: React.Dispatch<Action>, user: LoginUse
 export const registerUser = async (dispatch: React.Dispatch<Action>, user: RegisterUserPayload) => {
   dispatch({ type: 'REGISTER REQUEST' });
   try {
-    await axios.post('http://localhost:5000/api/users/register', user);
+    await axios.post('https://nova-mart-server.onrender.com/api/users/register', user);
     dispatch({ type: 'REGISTER SUCCESS' });
   } catch (error) {
     dispatch({ type: 'REGISTER FAILURE' });
@@ -46,7 +40,7 @@ export const registerUser = async (dispatch: React.Dispatch<Action>, user: Regis
 
 export const fetchUser = async (dispatch: React.Dispatch<Action>, id: string) => {
   try {
-    const response = await axios.get(`http://localhost:5000/api/users/${id}`);
+    const response = await axios.get(`https://nova-mart-server.onrender.com/api/users/${id}`);
     dispatch({ type: 'LOGIN SUCCESS', payload: response.data.user });
   } catch (error) {
     console.error("Error fetching user:", error);

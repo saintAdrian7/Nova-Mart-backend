@@ -11,7 +11,7 @@ const OrderHistory: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/orders/delivered/${state.loggedInUser?._id}`);
+        const response = await axios.get(`https://nova-mart-server.onrender.com/api/orders/delivered/${state.loggedInUser?._id}`);
         setOrders(response.data.orders);
       } catch (error) {
         console.error('Error fetching orders:', error);

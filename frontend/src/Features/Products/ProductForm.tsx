@@ -51,7 +51,7 @@ const CreateProduct: React.FC = () => {
       for (const image of images) {
         const formData = new FormData();
         formData.append('file', image);
-        const response = await axios.post('http://localhost:5000/upload', formData, {
+        const response = await axios.post('https://nova-mart-server.onrender.com/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -71,7 +71,7 @@ const CreateProduct: React.FC = () => {
       const token = localStorage.getItem('token')
       const response = await PostProduct(dispatch, productData);
       const productId = response;
-      await axios.patch(`http://localhost:5000/api/users/${state.loggedInUser?._id}`, {
+      await axios.patch(`https://nova-mart-server.onrender.com/api/users/${state.loggedInUser?._id}`, {
         products: [productId]
       },
       {

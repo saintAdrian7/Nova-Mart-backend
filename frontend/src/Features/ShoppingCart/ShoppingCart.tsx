@@ -17,7 +17,7 @@ const ShoppingCart: React.FC = () => {
   const   handleRemoveItem = async (productId: string) => {
     setCart(cart.filter(item => item._id !== productId));
     dispatch({ type: 'REMOVE FROM CART', payload: productId });
-    await axios.delete(`http://localhost:5000/api/users/product/${productId}/${state.loggedInUser?._id}`)
+    await axios.delete(`https://nova-mart-server.onrender.com/api/users/product/${productId}/${state.loggedInUser?._id}`)
   };
 
   const handleQuantityChange = (productId: string , newQuantity: number) => {

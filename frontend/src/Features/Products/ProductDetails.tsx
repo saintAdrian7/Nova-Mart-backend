@@ -29,7 +29,7 @@ const toogleModal = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/products/product/${id}`);
+        const response = await axios.get(`https://nova-mart-server.onrender.com/api/products/product/${id}`);
         setProduct(response.data.product);
         const fetchSimilarProducts = async () => {
           const products = await FetchProductsByCategory(dispatch, product?.Category as string)

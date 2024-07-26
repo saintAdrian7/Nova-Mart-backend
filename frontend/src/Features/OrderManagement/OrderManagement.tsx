@@ -18,7 +18,7 @@ const AdminOrders: React.FC = () => {
     const fetchOrders = async () => {
       const token = localStorage.getItem('token')
       try {
-        const response = await axios.get('http://localhost:5000/api/orders',
+        const response = await axios.get('https://nova-mart-server.onrender.com/api/orders',
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -49,7 +49,7 @@ const AdminOrders: React.FC = () => {
     const token = localStorage.getItem('token');
 
     await axios.patch(
-      `http://localhost:5000/api/orders/${orderId}`, 
+      `https://nova-mart-server.onrender.com/api/orders/${orderId}`, 
       { status: newStatus },
       {
         headers: {

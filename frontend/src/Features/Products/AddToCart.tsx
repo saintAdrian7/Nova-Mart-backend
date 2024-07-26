@@ -22,7 +22,7 @@ const AddToCart: React.FC<AddToCartProps> = ({ productId }) => {
     try {
       const token = localStorage.getItem('token')
       
-      await axios.patch(`http://localhost:5000/api/users/${state.loggedInUser._id}`,  {
+      await axios.patch(`https://nova-mart-server.onrender.com/api/users/${state.loggedInUser._id}`,  {
         cart: [...state.loggedInUser.cart, productId],
       }, {
         headers: {

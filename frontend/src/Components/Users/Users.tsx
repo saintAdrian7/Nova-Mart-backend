@@ -29,7 +29,7 @@ const UserManagement: React.FC = () => {
   const token = localStorage.getItem('token')
 
   const handleUserClick = async (id:string) => {
-    const response = await axios.get(`http://localhost:5000/api/users/${id}`)
+    const response = await axios.get(`https://nova-mart-server.onrender.com/api/users/${id}`)
     setSelectedUser(response.data.user)
    
     
@@ -38,7 +38,7 @@ const UserManagement: React.FC = () => {
   
 
   const fetchAllUsers = async () => {
-    const response = await axios.get("http://localhost:5000/api/users",
+    const response = await axios.get("https://nova-mart-server.onrender.com/api/users",
       {
         headers: {
           Authorization: `Bearer ${token}`
@@ -54,7 +54,7 @@ const UserManagement: React.FC = () => {
 
   const handleEdit = async (id: string, role: string) => {
     try {
-      await axios.patch(`http://localhost:5000/api/users/${id}`, { role },
+      await axios.patch(`https://nova-mart-server.onrender.com/api/users/${id}`, { role },
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -70,7 +70,7 @@ const UserManagement: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/user/${id}`,
+      await axios.delete(`https://nova-mart-server.onrender.com/api/users/user/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`

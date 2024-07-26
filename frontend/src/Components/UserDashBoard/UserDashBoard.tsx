@@ -84,7 +84,7 @@ const UserDashboard: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/users/${state.loggedInUser?._id}`);
+        const response = await axios.get(`https://nova-mart-server.onrender.com/api/users/${state.loggedInUser?._id}`);
         setUser(response.data.user);
       } catch (error) {
         console.error('Error fetching user data:', error);

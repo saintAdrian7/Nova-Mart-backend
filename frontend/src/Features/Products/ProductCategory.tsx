@@ -45,7 +45,7 @@ const ProductCategory: React.FC = () => {
 
     const fetchRecommendedProducts = async () => {
       try{
-        const response = await axios.get(`http://localhost:5000/api/products/recommendations/${state.loggedInUser?._id}`)
+        const response = await axios.get(`https://nova-mart-server.onrender.com/api/products/recommendations/${state.loggedInUser?._id}`)
         setRecommendedProducts(response.data.products)
       }catch(error){
         console.log(error);

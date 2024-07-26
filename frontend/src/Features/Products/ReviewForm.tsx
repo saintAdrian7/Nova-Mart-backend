@@ -23,7 +23,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmit }) =>
     }
 
     try {
-      await axios.post(`http://localhost:5000/api/reviews/${productId}`, {
+      await axios.post(`https://nova-mart-server.onrender.com/api/reviews/${productId}`, {
         rating,
         comment,
         userId: state.loggedInUser?._id,

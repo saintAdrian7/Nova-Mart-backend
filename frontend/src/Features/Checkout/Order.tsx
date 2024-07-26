@@ -32,7 +32,7 @@ const toogleModal = () => {
     const fetchProductDetails = async () => {
       try {
         const responses = await Promise.all(cart.map(item =>
-          axios.get(`http://localhost:5000/api/products/product/${item._id}`)
+          axios.get(`https://nova-mart-server.onrender.com/api/products/product/${item._id}`)
         ));
         
         const details = responses.reduce((acc, response) => {
@@ -92,7 +92,7 @@ const toogleModal = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/orders', {
+      const response = await axios.post('https://nova-mart-server.onrender.com/api/orders', {
         user: state.loggedInUser?._id,
         products: cart.map(item => ({
           product: item._id,
@@ -105,7 +105,7 @@ const toogleModal = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      await axios.patch(`http://localhost:5000/api/users/${state.loggedInUser?._id}`, {
+      await axios.patch(`https://nova-mart-server.onrender.com/api/users/${state.loggedInUser?._id}`, {
         orders: [response.data.order._id],
         cart: []
       }, {

@@ -34,7 +34,7 @@ const RegistrationForm: React.FC = () => {
       if (profilePhoto) {
         const formData = new FormData();
         formData.append('file', profilePhoto);
-        const response = await axios.post('http://localhost:5000/upload', formData, {
+        const response = await axios.post('https://nova-mart-server.onrender.com/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
