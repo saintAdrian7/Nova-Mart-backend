@@ -4,6 +4,7 @@
   "description": "An online e-commerce platform",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm install rimraf",
     "build": "rimraf dist && tsc",
     "prestart": "npm run build",
     "start": "node ./dist/server.js",
