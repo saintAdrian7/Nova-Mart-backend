@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Container, Typography, Box, List, ListItem, ListItemText, TextField, Button, Divider, Grid, Paper } from '@mui/material';
+import { Container, Typography, Box, List, ListItem, ListItemText, TextField, Button, Divider, Grid, Paper, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext/AuthContextConsts';
 import { Product } from '../../Models/Models';
-import { Snackbar, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import Footer from '../../Components/Footer/Footer';
+import Navbar from '../../Components/Navbar/Navbar';
 
 const CheckoutPage: React.FC = () => {
-  const navigate = useNavigate()
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+const toogleModal = () => {
+   setIsModalOpen(!isModalOpen);
+}
+  const navigate = useNavigate();
   const location = useLocation();
-  const {state} = useAuth()
-  const cart:{_id:string, quantity:number}[] = location.state?.cart || [];
+  const { state } = useAuth();
+  const cart: { _id: string, quantity: number }[] = location.state?.cart || [];
   const [userInfo, setUserInfo] = useState({ name: '', email: '', address: '' });
   const [loading, setLoading] = useState(false);
   const [totalAmount, setTotalAmount] = useState<number>(0);
@@ -20,9 +25,8 @@ const CheckoutPage: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
-const token = localStorage.getItem('token')
-
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -51,7 +55,7 @@ const token = localStorage.getItem('token')
     const amount = cart.reduce((total, item) => {
       const product = details[item._id];
       if (product) {
-        return total + product.DiscountedPrice  * item.quantity;
+        return total + product.DiscountedPrice * item.quantity;
       }
       return total;
     }, 0);
@@ -88,7 +92,7 @@ const token = localStorage.getItem('token')
 
     setLoading(true);
     try {
-     const response = await axios.post('http://localhost:5000/api/orders', {
+      const response = await axios.post('http://localhost:5000/api/orders', {
         user: state.loggedInUser?._id,
         products: cart.map(item => ({
           product: item._id,
@@ -102,21 +106,21 @@ const token = localStorage.getItem('token')
         }
       });
       await axios.patch(`http://localhost:5000/api/users/${state.loggedInUser?._id}`, {
-        orders:[response.data.order._id],
-        cart:[]
-      },{
+        orders: [response.data.order._id],
+        cart: []
+      }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      })
+      });
       setSnackbarMessage('Order submitted successfully!');
       setSnackbarSeverity('success');
-      navigate(`/dashboard/${state.loggedInUser?._id}`)
+      navigate(`/dashboard/${state.loggedInUser?._id}`);
       
     } catch (error) {
       console.error('Order submission failed:', error);
       setSnackbarMessage('Order submission failed. Please try again.');
-       setSnackbarSeverity('error');
+      setSnackbarSeverity('error');
     } finally {
       setLoading(false);
       setSnackbarOpen(true);
@@ -124,16 +128,18 @@ const token = localStorage.getItem('token')
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
+    <>
+    <Navbar tooglemodal={toogleModal} />
+    <Container maxWidth="md" sx={{ mt: 4, p: 4, bgcolor: 'background.default', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)', background: 'linear-gradient(135deg, #00c6ff, #0072ff)' }}>
+      <Typography variant="h4" gutterBottom sx={{ color: '#ffffff', mb: 3 }}>
         Checkout
       </Typography>
 
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" gutterBottom sx={{ color: '#ffffff' }}>
           Order Summary
         </Typography>
-        <Paper sx={{ p: 2 }}>
+        <Paper sx={{ p: 2, bgcolor: '#ffffff', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
           <List>
             {cart.map(item => {
               const product = productDetails[item._id];
@@ -142,6 +148,8 @@ const token = localStorage.getItem('token')
                   <ListItemText
                     primary={`Product Name: ${product?.Name || 'Loading...'}`}
                     secondary={`Quantity: ${item.quantity}`}
+                    primaryTypographyProps={{ color: '#333' }}
+                    secondaryTypographyProps={{ color: '#666' }}
                   />
                   <Typography variant="body2" color="textSecondary">
                     ${product?.DiscountedPrice || 'Loading...'} each
@@ -150,17 +158,17 @@ const token = localStorage.getItem('token')
               );
             })}
           </List>
-          <Divider sx={{ my: 2 }} />
-          <Typography variant="h6" align="right">
+          <Divider sx={{ my: 2, bgcolor: '#ddd' }} />
+          <Typography variant="h6" align="right" sx={{ color: '#333' }}>
             Total: ${totalAmount.toFixed(2)}
           </Typography>
         </Paper>
       </Box>
 
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" gutterBottom sx={{ color: '#ffffff' }}>
         Shipping Information
       </Typography>
-      <Paper sx={{ p: 2 }}>
+      <Paper sx={{ p: 2, bgcolor: '#ffffff', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -171,6 +179,9 @@ const token = localStorage.getItem('token')
               onChange={handleChange}
               error={!!errors.name}
               helperText={errors.name}
+              sx={{ mb: 2 }}
+              InputProps={{ style: { color: '#333' } }}
+              InputLabelProps={{ style: { color: '#666' } }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -183,6 +194,9 @@ const token = localStorage.getItem('token')
               onChange={handleChange}
               error={!!errors.email}
               helperText={errors.email}
+              sx={{ mb: 2 }}
+              InputProps={{ style: { color: '#333' } }}
+              InputLabelProps={{ style: { color: '#666' } }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -196,6 +210,8 @@ const token = localStorage.getItem('token')
               onChange={handleChange}
               error={!!errors.address}
               helperText={errors.address}
+              InputProps={{ style: { color: '#333' } }}
+              InputLabelProps={{ style: { color: '#666' } }}
             />
           </Grid>
         </Grid>
@@ -207,26 +223,28 @@ const token = localStorage.getItem('token')
           color="primary"
           onClick={handleSubmit}
           disabled={loading}
+          sx={{ backgroundColor: '#00c6ff', '&:hover': { backgroundColor: '#0072ff' } }}
         >
           {loading ? 'Processing...' : 'Place Order'}
         </Button>
       </Box>
-      <Snackbar
-    open={snackbarOpen}
-    autoHideDuration={6000}
-    onClose={() => setSnackbarOpen(false)}
-  >
-    <Alert 
-      onClose={() => setSnackbarOpen(false)} 
-      severity={snackbarSeverity} 
-      sx={{ width: '100%' }}
-    >
-      {snackbarMessage}
-    </Alert>
-  </Snackbar>
-  
-    </Container>
 
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert 
+          onClose={() => setSnackbarOpen(false)} 
+          severity={snackbarSeverity} 
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </Container>
+    <Footer/>
+    </>
   );
 };
 

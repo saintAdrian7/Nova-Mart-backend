@@ -9,6 +9,8 @@ import ReviewForm from './ReviewForm';
 import { FetchProductsByCategory } from '../../context/ProductContext/ProductContextActions';
 import { useProduct } from '../../context/ProductContext/ProductContextConsts';
 import ProductCard from './ProductCard';
+import Navbar from '../../Components/Navbar/Navbar';
+import Footer from '../../Components/Footer/Footer';
 
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +20,11 @@ const ProductDetails: React.FC = () => {
   const [showReviews, setShowReviews] = useState<boolean>(false);
   const [similarProducts, setSimilarProducts] = useState<Product [] | null>(null)
   const {dispatch} = useProduct()
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+const toogleModal = () => {
+   setIsModalOpen(!isModalOpen);
+}
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -60,7 +67,9 @@ const ProductDetails: React.FC = () => {
   if (!product) return <Typography>No product found.</Typography>;
 
   return (
-    <Container maxWidth="lg">
+    <>
+    <Navbar tooglemodal={toogleModal} />
+    <Container sx={{mb:'50'}} maxWidth="lg">
       <Box sx={{ mt: 4, mb: 4 }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#ecf0f1', textTransform: 'uppercase', letterSpacing: '2px', backgroundColor: '#34495e', border: '2px solid #c0392b', borderRadius: '8px', padding: '10px 15px', display: 'inline-block', fontFamily: '"Roboto", sans-serif', textAlign: 'center', boxShadow: '0 6px 12px rgba(0, 0, 0, 0.6)', transform: 'rotate(2deg)', transition: 'all 0.3s ease-in-out', '&:hover': { backgroundColor: '#2c3e50', color: '#e74c3c', borderColor: '#e74c3c', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)', transform: 'rotate(-2deg)', } }}>
           {product.Name}
@@ -147,8 +156,9 @@ const ProductDetails: React.FC = () => {
             ))}
 
           </Grid>
-
     </Container>
+    <Footer/>
+    </>
   );
 };
 

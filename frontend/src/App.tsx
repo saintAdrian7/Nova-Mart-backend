@@ -5,6 +5,7 @@ import { fetchUser } from './context/AuthContext/AuthContextActions';
 import AdminOrders from './Features/OrderManagement/OrderManagement';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import FallbackComponent from './Components/ProtectPages';
+import LandingPage from './Components/LandingPage/LandingPage';
 
 const HomePage = lazy(() => import('./pages/Homepage/HomePage'));
 const ProductPage = lazy(() => import('./pages/ProductPage/ProductPage'));
@@ -46,15 +47,19 @@ const App: React.FC = () => {
         }
       >
         <Routes>
-          <Route path='/' element={<LayoutPage />}>
+          <Route path='/Homepage' element={<LayoutPage />}>
             <Route path="/Homepage" element={<HomePage />} />
-            <Route path="/product/:id" element={<ProductPage />} />
+            
+            
+          </Route>
+           
             <Route path="/admin/orders" element={ state.loggedInUser ? <AdminOrders /> : <FallbackComponent />} />
             <Route path="/admin/users" element={ state.loggedInUser ?  <Users /> : <FallbackComponent />} />
             <Route path="/admin/products" element={<><h1>Products</h1></>} />
             <Route path="/admin/reports" element={<><h1>Reports</h1></>} />
             <Route path="/checkout" element={state.loggedInUser ? <CheckOut /> : <FallbackComponent />} />
-          </Route>
+            <Route path="/product/:id" element={<ProductPage />} />
+          <Route path='/' element={<LandingPage/>} />
           <Route path='/dashboard/:id' element={state.loggedInUser? <DashBoard />: <FallbackComponent/>} />
         </Routes>
       </Suspense>

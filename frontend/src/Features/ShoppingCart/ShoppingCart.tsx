@@ -48,14 +48,14 @@ const ShoppingCart: React.FC = () => {
           <Grid container spacing={3}>
             {cart.map(product => (
               <Grid item xs={12} md={4} key={product._id}>
-                <Card >
+                <Card  >
                   <CardMedia
                     component="img"
-                    height="200"
+                    height="100"
                     image={product.Image[0]}
                     alt={product.Name}
                   />
-                  <CardContent>
+                  <CardContent sx={{height:'260px'}}>
                     <Typography variant="h6" gutterBottom>
                       {product.Name}
                     </Typography>

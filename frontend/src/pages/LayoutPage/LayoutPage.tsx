@@ -9,13 +9,12 @@ export default function LayoutPage(){
 const  {state} = useAuth()
 const [isModalOpen, setIsModalOpen] = useState(false);
 
-
-const closeModal = () => {
-  setIsModalOpen(false);
-};
 const toogleModal = () => {
    setIsModalOpen(!isModalOpen);
 }
+const closeModal = () => {
+   setIsModalOpen(false);
+ };
 
 return (
    <div className="layoutpage">
