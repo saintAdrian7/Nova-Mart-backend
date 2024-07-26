@@ -2,13 +2,14 @@ import React from 'react';
 import { Button, Snackbar, Alert } from '@mui/material';
 import { useAuth } from '../../context/AuthContext/AuthContextConsts';
 import axios from 'axios';
+import { fetchUser } from '../../context/AuthContext/AuthContextActions';
 
 interface AddToCartProps {
   productId: string | undefined;
 }
 
 const AddToCart: React.FC<AddToCartProps> = ({ productId }) => {
-  const { state, dispatch } = useAuth();
+  const { state, dispatch} = useAuth();
   const [open, setOpen] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -21,7 +22,6 @@ const AddToCart: React.FC<AddToCartProps> = ({ productId }) => {
     try {
       const token = localStorage.getItem('token')
       
-      dispatch({ type: 'ADD TO CART', payload: productId as string });
       await axios.patch(`http://localhost:5000/api/users/${state.loggedInUser._id}`,  {
         cart: [...state.loggedInUser.cart, productId],
       }, {
@@ -29,6 +29,7 @@ const AddToCart: React.FC<AddToCartProps> = ({ productId }) => {
           Authorization: `Bearer ${token}`
         }
       });
+      fetchUser(dispatch, state.loggedInUser._id)
 
       setOpen(true);
     } catch (err) {
